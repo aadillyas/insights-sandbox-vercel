@@ -7,6 +7,7 @@
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://unpkg.com/recharts@2.12.0/umd/Recharts.js"></script>
   <script src="/data.js"></script>
@@ -825,7 +826,7 @@ const WidgetChat = ({ widget, onClose }) => {
       const data = await res.json();
       setTyping(false);
       setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: data.reply || 'No response.' }]);
-    } catch {
+    } catch (err) {
       setTyping(false);
       setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: 'Connection error. Please try again.' }]);
     }
@@ -1028,7 +1029,7 @@ const ChatDrawer = ({ open, onClose }) => {
       const data = await res.json();
       setTyping(false);
       setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: data.reply || 'No response.' }]);
-    } catch {
+    } catch (err) {
       setTyping(false);
       setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: 'Connection error. Please try again.' }]);
     }
