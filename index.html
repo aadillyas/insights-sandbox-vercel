@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Insights+ | ABC Retail</title>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.12.0/umd/Recharts.js"></script>
+  <script src="/data.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet" />
+
+  <style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #111318;
+      --ink-2: #1a1e27;
+      --ink-3: #252a36;
+      --muted: #4a5168;
+      --muted-2: #6b7490;
+      --border: rgba(255,255,255,0.09);
+      --border-light: rgba(255,255,255,0.05);
+      --surface: rgba(255,255,255,0.04);
+      --surface-2: rgba(255,255,255,0.07);
+      --accent: #3b72c4;
+      --accent-dim: rgba(59,114,196,0.18);
+      --accent-2: #2da870;
+      --accent-3: #d97706;
+      --danger: #dc6060;
+      --white: #f0f2f6;
+      --text: rgba(240,242,246,0.93);
+      --text-2: rgba(240,242,246,0.55);
+      --text-3: rgba(240,242,246,0.30);
+      --radius: 10px;
+      --radius-sm: 7px;
+      --radius-lg: 14px;
+      --font-display: 'IBM Plex Sans Condensed', sans-serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --nav-h: 52px;
+      --chat-h: 64px;
+      /* Real viewport height — updated by JS to handle mobile browser chrome */
+      --vh: 1vh;
+    }
+
+    html { height: 100%; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      /* Use dynamic viewport height so mobile browser chrome is accounted for */
+      height: calc(var(--vh, 1vh) * 100);
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    #root {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--ink-3); border-radius: 4px; }
+
+    /* ── INTRO ── */
+    .intro {
+      position: relative; z-index: 10;
+      height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 2rem 1.25rem;
+      background: linear-gradient(160deg, #151a24 0%, var(--ink) 60%);
+    }
+
+    .intro-inner { max-width: 560px; width: 100%; text-align: center; padding: 1rem 0; }
+
+    .intro-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 5px 12px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
+    }
+
+    .intro-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-2); display: block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .intro-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 7vw, 3.6rem);
+      font-weight: 700; line-height: 1.05; letter-spacing: -0.01em;
+      color: var(--white); margin-bottom: 0.75rem;
+    }
+
+    .intro-title span { color: var(--accent); }
+
+    .intro-sub {
+      font-size: 0.95rem; color: var(--text-2);
+      margin-bottom: 2rem; line-height: 1.65;
+      max-width: 420px; margin-left: auto; margin-right: auto;
+    }
+
+    .intro-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem; margin-bottom: 2rem;
+    }
+
+    /* Stack to single column on very small screens */
+    @media (max-width: 340px) {
+      .intro-stats { grid-template-columns: 1fr; }
+    }
+
+    .intro-stat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem 0.75rem;
+    }
+
+    .intro-stat-num {
+      font-family: var(--font-display); font-size: clamp(1.4rem, 5vw, 1.9rem);
+      font-weight: 700; color: var(--white); line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .intro-stat-label {
+      font-size: 0.7rem; color: var(--text-2);
+      text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      padding: 0.875rem 1.75rem; font-family: var(--font-body);
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+      /* Minimum touch target */
+      min-height: 44px;
+    }
+
+    .btn-primary:active { background: #2f5ea0; }
+
+    /* ── LOGIN ── */
+    .login {
+      position: relative; z-index: 10;
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 1.5rem 1.25rem;
+      background: var(--ink);
+    }
+
+    .login-card {
+      background: var(--ink-2); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 2rem 1.5rem;
+      width: 100%; max-width: 400px;
+    }
+
+    .login-logo {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+      color: white; margin-bottom: 1.25rem;
+    }
+
+    .login-title {
+      font-family: var(--font-display); font-size: 1.6rem;
+      font-weight: 700; margin-bottom: 0.2rem;
+    }
+
+    .login-sub { color: var(--text-2); font-size: 0.875rem; margin-bottom: 1.75rem; }
+
+    .form-group { margin-bottom: 1rem; }
+
+    .form-label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-2); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 0.4rem;
+    }
+
+    .form-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.75rem 0.875rem;
+      color: var(--text); font-family: var(--font-body);
+      /* 16px prevents iOS auto-zoom on focus */
+      font-size: 16px;
+      transition: border-color 0.2s; outline: none;
+      min-height: 44px;
+    }
+
+    .form-input:focus { border-color: var(--accent); }
+    .form-input:disabled { opacity: 0.45; }
+
+    .btn-login {
+      width: 100%; margin-top: 1.25rem; padding: 0.875rem;
+      min-height: 44px;
+      background: var(--accent); color: white; border: none;
+      border-radius: var(--radius-sm); font-family: var(--font-body);
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-login:active { background: #2f5ea0; }
+    .btn-login:disabled { opacity: 0.5; cursor: wait; }
+
+    /* ── DATA DISCOVERY ── */
+    .discovery {
+      position: relative; z-index: 10;
+      height: 100%; display: flex; flex-direction: column;
+      background: var(--ink);
+      overflow: hidden;
+    }
+
+    .discovery-header {
+      padding: 1.25rem 1.25rem 1rem; flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .discovery-step {
+      font-size: 0.72rem; font-weight: 600; color: var(--accent-2);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem;
+    }
+
+    .discovery-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 4vw, 1.9rem);
+      font-weight: 700; line-height: 1.1;
+    }
+
+    .discovery-title span { color: var(--accent); }
+    .discovery-desc { color: var(--text-2); margin-top: 0.4rem; font-size: 0.875rem; }
+
+    .discovery-body {
+      flex: 1; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 1.25rem;
+    }
+
+    .table-grid {
+      display: grid;
+      /* Single column on mobile, 2-up when space allows */
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 600px) {
+      .table-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1000px) {
+      .table-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .table-card {
+      background: var(--ink-2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem;
+    }
+
+    .table-card-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 0.75rem; }
+
+    .table-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      background: var(--surface-2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+
+    .table-card-meta { flex: 1; min-width: 0; }
+    .table-card-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+    .table-card-count { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+    .table-card-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; margin-bottom: 0.75rem; }
+
+    .table-fields { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 0.75rem; }
+
+    .field-chip {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 7px;
+      font-size: 0.7rem; font-family: monospace; color: var(--text-2);
+    }
+
+    .table-sample { border-top: 1px solid var(--border); padding-top: 0.625rem; }
+    .table-sample-label {
+      font-size: 0.68rem; font-weight: 600; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;
+    }
+
+    .sample-row {
+      font-size: 0.73rem; color: var(--text-2);
+      padding: 3px 0; border-bottom: 1px solid var(--border-light);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .sample-row:last-child { border-bottom: none; }
+
+    .discovery-footer {
+      padding: 1rem 1.25rem;
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+
+    @media (min-width: 500px) {
+      .discovery-footer { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+
+    .discovery-footer-note { font-size: 0.82rem; color: var(--text-2); }
+    .discovery-footer-note strong { color: var(--text); }
+
+    /* ── DASHBOARD LAYOUT ── */
+    .dashboard {
+      display: flex; flex-direction: column;
+      height: 100%; position: relative; z-index: 10;
+      overflow: hidden;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      height: var(--nav-h); flex-shrink: 0;
+      background: var(--ink-2);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 1rem; gap: 10px; z-index: 50;
+    }
+
+    .nav-logo {
+      width: 30px; height: 30px; border-radius: 6px;
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+      color: white; flex-shrink: 0; letter-spacing: -0.02em;
+    }
+
+    .nav-title {
+      font-family: var(--font-display); font-size: 0.95rem;
+      font-weight: 700; flex: 1; letter-spacing: 0.01em;
+    }
+
+    .nav-company {
+      font-size: 0.72rem; color: var(--text-2);
+      display: none;
+    }
+
+    @media (min-width: 400px) { .nav-company { display: block; } }
+
+    .nav-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 3px 10px;
+      font-size: 0.68rem; font-weight: 600; color: var(--accent-2);
+      white-space: nowrap; letter-spacing: 0.03em;
+    }
+
+    /* ── CANVAS ── */
+    .canvas {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.875rem;
+      padding-bottom: calc(var(--chat-h) + 0.875rem + env(safe-area-inset-bottom));
+    }
+
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+    }
+
+    @media (min-width: 600px) {
+      .canvas-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1100px) {
+      .canvas-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .widget-wide { grid-column: 1 / -1; }
+
+    @media (min-width: 1100px) {
+      .widget-wide { grid-column: span 2; }
+    }
+
+    /* ── WIDGET ── */
+    .widget {
+      background: var(--ink-2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      display: flex; flex-direction: column; min-height: 260px;
+    }
+
+    .widget-head {
+      padding: 0.875rem 0.875rem 0.5rem;
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .widget-category {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--muted-2); margin-bottom: 2px;
+    }
+
+    .widget-title { font-weight: 600; font-size: 0.88rem; color: var(--text); line-height: 1.3; }
+
+    .widget-kpi {
+      font-family: var(--font-display); font-size: 1.5rem;
+      font-weight: 700; color: var(--white); margin-top: 2px;
+    }
+
+    .widget-kpi-sub { font-size: 0.7rem; color: var(--text-2); margin-top: 1px; }
+
+    /* 44x44 touch target for widget chat button */
+    .widget-chat-btn {
+      width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+      background: transparent; border: 1px solid transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s;
+      color: var(--text-3); font-size: 0.85rem;
+      margin: -6px -6px 0 0;
+    }
+
+    .widget-chat-btn:active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    @media (hover: hover) {
+      .widget-chat-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+    }
+
+    .widget-chart { flex: 1; padding: 0.25rem 0.5rem 0.625rem; min-height: 150px; }
+
+    /* ── TREND BADGE ── */
+    .trend {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 0.7rem; font-weight: 600; padding: 2px 7px;
+      border-radius: 3px; margin-top: 3px;
+    }
+
+    .trend.up { background: rgba(45,168,112,0.12); color: var(--accent-2); }
+    .trend.down { background: rgba(220,96,96,0.12); color: var(--danger); }
+
+    /* ── CHAT BAR ── */
+    .chat-bar {
+      position: fixed; bottom: var(--keyboard-offset, 0px); left: 0; right: 0; z-index: 100;
+      background: var(--ink-2);
+      border-top: 1px solid var(--border);
+      padding: 0.625rem 0.875rem;
+      padding-bottom: max(0.625rem, env(safe-area-inset-bottom));
+      display: flex; align-items: center; gap: 8px;
+      /* Height adjusts to content + safe area */
+    }
+
+    .chat-input-wrap {
+      flex: 1; display: flex; align-items: center;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0 0.875rem; gap: 8px;
+      min-height: 44px;
+      transition: border-color 0.15s;
+    }
+
+    .chat-input-wrap:focus-within { border-color: var(--accent); }
+
+    .chat-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: var(--text); font-family: var(--font-body);
+      /* 16px to prevent iOS zoom */
+      font-size: 16px;
+      padding: 0.5rem 0;
+    }
+
+    .chat-input::placeholder { color: var(--text-3); }
+
+    .chat-send {
+      width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+      background: var(--accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.9rem; transition: background 0.15s;
+    }
+
+    .chat-send:active { background: #2f5ea0; }
+    .chat-send:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── CHAT DRAWER ── */
+    .chat-drawer-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.55);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .chat-drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+    .chat-drawer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 201;
+      /* keyboard-aware: JS sets --keyboard-h */
+      height: min(72vh, 580px);
+      background: var(--ink-2); border-top: 1px solid var(--border);
+      border-radius: 12px 12px 0 0;
+      display: flex; flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      /* Ensure drawer lifts above keyboard */
+      bottom: var(--keyboard-offset, 0px);
+    }
+
+    .chat-drawer.open { transform: translateY(0); }
+
+    .drawer-handle {
+      width: 36px; height: 3px; border-radius: 3px;
+      background: var(--border); margin: 10px auto 0; flex-shrink: 0;
+    }
+
+    .drawer-head {
+      padding: 0.875rem 1rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .drawer-head-label {
+      font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--accent); margin-bottom: 1px;
+    }
+
+    .drawer-head-title { font-weight: 600; font-size: 0.95rem; }
+
+    .drawer-close {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: transparent; border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-2); font-size: 1rem;
+      margin: -6px -8px -6px 0;
+    }
+
+    .drawer-close:active { color: var(--text); }
+
+    .drawer-messages {
+      flex: 1; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.875rem 1rem;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .msg { display: flex; align-items: flex-end; gap: 8px; }
+    .msg.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+      background: var(--surface-2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    .msg.user .msg-avatar { background: var(--accent); }
+
+    .msg-bubble {
+      max-width: 80%; padding: 0.6rem 0.875rem;
+      border-radius: 12px; font-size: 0.875rem; line-height: 1.55;
+    }
+
+    .msg.ai .msg-bubble {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-bottom-left-radius: 3px; color: var(--text);
+    }
+
+    .msg.user .msg-bubble {
+      background: var(--accent); border-bottom-right-radius: 3px; color: white;
+    }
+
+    .typing-dots { display: flex; gap: 4px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--muted-2); animation: blink 1.4s infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%,80%,100%{transform:scale(0.75);opacity:0.35} 40%{transform:scale(1);opacity:1} }
+
+    .drawer-input {
+      padding: 0.625rem 1rem;
+      padding-bottom: max(0.625rem, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+
+    .drawer-input-field {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.6rem 0.875rem;
+      color: var(--text); font-family: var(--font-body);
+      font-size: 16px;
+      outline: none; transition: border-color 0.15s;
+      min-height: 44px;
+    }
+
+    .drawer-input-field:focus { border-color: var(--accent); }
+    .drawer-input-field::placeholder { color: var(--text-3); }
+
+    .drawer-send {
+      width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+      background: var(--accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.85rem; transition: background 0.15s;
+    }
+
+    .drawer-send:active { background: #2f5ea0; }
+    .drawer-send:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── WIDGET CHAT SHEET ── */
+    .wchat-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.65);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+
+    .wchat-overlay.open { opacity: 1; pointer-events: all; }
+
+    .wchat-sheet {
+      width: 100%; max-width: 540px;
+      height: min(68vh, 500px);
+      background: var(--ink-2); border: 1px solid var(--border);
+      border-radius: 12px 12px 0 0;
+      display: flex; flex-direction: column;
+      transform: translateY(16px); transition: transform 0.22s ease;
+      bottom: var(--keyboard-offset, 0px);
+      position: relative;
+    }
+
+    .wchat-overlay.open .wchat-sheet { transform: translateY(0); }
+
+    @media (min-width: 540px) {
+      .wchat-overlay { align-items: center; }
+      .wchat-sheet { border-radius: 12px; }
+    }
+
+    .wchat-head {
+      padding: 1rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .wchat-head-label {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.09em; color: var(--muted-2); margin-bottom: 1px;
+    }
+
+    .wchat-head-title { font-weight: 600; font-size: 0.9rem; }
+
+    .wchat-close {
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: transparent; border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-2); font-size: 1rem;
+      margin: -6px -6px -6px 0;
+    }
+
+    .wchat-close:active { color: var(--danger); }
+
+    .wchat-messages {
+      flex: 1; overflow-y: auto; padding: 0.875rem 1rem;
+      -webkit-overflow-scrolling: touch;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .wchat-empty { text-align: center; padding: 1.5rem 0.5rem; }
+    .wchat-empty-icon { font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.5; }
+    .wchat-empty-title { font-weight: 600; font-size: 0.875rem; margin-bottom: 0.35rem; }
+    .wchat-empty-sub { font-size: 0.78rem; color: var(--text-2); margin-bottom: 1rem; }
+
+    .suggestions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+
+    .suggestion-chip {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 7px 12px;
+      font-size: 0.78rem; font-family: var(--font-body); color: var(--text-2);
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+      min-height: 36px;
+    }
+
+    .suggestion-chip:active { border-color: var(--accent); color: var(--accent); }
+
+    @media (hover: hover) {
+      .suggestion-chip:hover { border-color: var(--accent); color: var(--accent); }
+    }
+
+    .wchat-input-row {
+      padding: 0.625rem 1rem;
+      padding-bottom: max(0.625rem, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+
+    .wchat-field {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.6rem 0.875rem;
+      color: var(--text); font-family: var(--font-body);
+      font-size: 16px;
+      outline: none; transition: border-color 0.15s;
+      min-height: 44px;
+    }
+
+    .wchat-field:focus { border-color: var(--accent); }
+    .wchat-field::placeholder { color: var(--text-3); }
+
+    .wchat-send {
+      width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+      background: var(--accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.85rem; transition: background 0.15s;
+    }
+
+    .wchat-send:active { background: #2f5ea0; }
+    .wchat-send:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── FADE ANIMATION ── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp 0.35s ease both; }
+    .fade-up-2 { animation: fadeUp 0.35s 0.08s ease both; }
+    .fade-up-3 { animation: fadeUp 0.35s 0.16s ease both; }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  </style>
+</head>
+
+<script>
+// Fix --vh for mobile browser chrome (address bar height changes)
+function setVh() {
+  document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+}
+setVh();
+window.addEventListener("resize", setVh);
+// Keyboard-aware: shift fixed drawers above keyboard on iOS/Android
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", function() {
+    var offset = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
+    document.documentElement.style.setProperty("--keyboard-offset", Math.max(0, offset) + "px");
+  });
+}
+</script>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+const {
+  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} = Recharts;
+
+const D = window.ABC_DATA;
+
+// ── Icons (inline SVG via emoji-like helpers) ──
+const Icon = ({ name, size = 16 }) => {
+  const icons = {
+    send: '➤',
+    bot: '◈',
+    user: '●',
+    close: '✕',
+    arrow: '→',
+    spark: '✦',
+    up: '▲',
+    down: '▼',
+    receipt: '🧾',
+    tag: '🏷',
+    users: '👥',
+    store: '🏪',
+    package: '📦',
+    'user-check': '✅',
+    chart: '📊',
+    info: 'ℹ',
+  };
+  return <span style={{ fontSize: size, lineHeight: 1 }}>{icons[name] || '◆'}</span>;
+};
+
+// ── Colour palette for charts ──
+const PALETTE = ['#4f8ef7','#34d399','#fb923c','#a78bfa','#f472b6','#fbbf24'];
+
+// ── Number formatter ──
+const fmt = (n, prefix = '') => {
+  if (n >= 1000000) return `${prefix}${(n/1000000).toFixed(1)}M`;
+  if (n >= 1000) return `${prefix}${(n/1000).toFixed(0)}K`;
+  return `${prefix}${n.toLocaleString()}`;
+};
+
+// ── Markdown-lite renderer ──
+const renderMd = (text) => text
+  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+  .replace(/\n/g, '<br/>');
+
+// ══════════════════════════════════
+// INTRO SCREEN
+// ══════════════════════════════════
+const IntroScreen = ({ onContinue }) => {
+  const totalRevenue = D.monthly_revenue.reduce((s, m) => s + m.revenue, 0);
+  const totalTx = D.monthly_revenue.reduce((s, m) => s + m.transactions, 0);
+
+  return (
+    <div className="intro">
+      <div className="intro-inner">
+        <div className="intro-badge fade-up"><span />{D.meta.company} · {D.meta.industry}</div>
+        <h1 className="intro-title fade-up-2">Your POS data,<br /><span>finally intelligent</span></h1>
+        <p className="intro-sub fade-up-3">Insights+ turns raw point-of-sale records into a living dashboard with AI you can actually talk to.</p>
+
+        <div className="intro-stats fade-up-3">
+          <div className="intro-stat">
+            <div className="intro-stat-num">{D.stores.length}</div>
+            <div className="intro-stat-label">Store locations</div>
+          </div>
+          <div className="intro-stat">
+            <div className="intro-stat-num">{fmt(totalTx)}</div>
+            <div className="intro-stat-label">Transactions loaded</div>
+          </div>
+          <div className="intro-stat">
+            <div className="intro-stat-num">{fmt(totalRevenue, 'LKR ')}</div>
+            <div className="intro-stat-label">Revenue tracked</div>
+          </div>
+        </div>
+
+        <button className="btn-primary fade-up-3" onClick={onContinue}>
+          <Icon name="spark" /> Explore your data
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════
+// LOGIN SCREEN
+// ══════════════════════════════════
+const LoginScreen = ({ onLogin }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(onLogin, 1200);
+  };
+
+  return (
+    <div className="login">
+      <div className="login-card fade-up">
+        <div className="login-logo">I+</div>
+        <h1 className="login-title">Sign in</h1>
+        <p className="login-sub">Access your analytics workspace</p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Organisation</label>
+            <input className="form-input" value={D.meta.company} disabled />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input className="form-input" type="email" defaultValue="admin@abcretail.lk" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input className="form-input" type="password" defaultValue="••••••••" />
+          </div>
+          <button type="submit" className="btn-login" disabled={loading}>
+            {loading ? 'Authenticating…' : 'Access Dashboard'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════
+// DATA DISCOVERY SCREEN
+// ══════════════════════════════════
+const DiscoveryScreen = ({ onBuild }) => {
+  const tableIcons = { receipt: '🧾', tag: '🏷️', users: '👥', store: '🏪', package: '📦', 'user-check': '👤' };
+
+  return (
+    <div className="discovery">
+      <div className="discovery-header">
+        <div className="discovery-step">Step 1 of 2 — Data Review</div>
+        <h2 className="discovery-title">Your connected <span>POS datasets</span></h2>
+        <p className="discovery-desc">These tables are synced from your POS system. Review the structure before building your canvas.</p>
+      </div>
+
+      <div className="discovery-body">
+        <div className="table-grid">
+          {D.tables.map((t, i) => (
+            <div className="table-card fade-up" key={t.id} style={{ animationDelay: `${i * 0.06}s` }}>
+              <div className="table-card-head">
+                <div className="table-icon">{tableIcons[t.icon] || '📋'}</div>
+                <div className="table-card-meta">
+                  <div className="table-card-name">{t.label}</div>
+                  <div className="table-card-count">{t.record_count.toLocaleString()} records</div>
+                </div>
+              </div>
+              <p className="table-card-desc">{t.description}</p>
+              <div className="table-fields">
+                {t.fields.map(f => <span className="field-chip" key={f}>{f}</span>)}
+              </div>
+              <div className="table-sample">
+                <div className="table-sample-label">Sample rows</div>
+                {t.sample.map((row, ri) => (
+                  <div className="sample-row" key={ri}>
+                    {Object.entries(row).map(([k, v]) => `${k}: ${v}`).join(' · ')}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="discovery-footer">
+        <p className="discovery-footer-note"><strong>{D.tables.length} datasets</strong> · {D.tables.reduce((s, t) => s + t.record_count, 0).toLocaleString()} total records ready</p>
+        <button className="btn-primary" onClick={onBuild}>
+          Build my canvas <Icon name="arrow" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════
+// WIDGET CHAT
+// ══════════════════════════════════
+const WidgetChat = ({ widget, onClose }) => {
+  const [msgs, setMsgs] = useState([]);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+  const endRef = useRef(null);
+
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, typing]);
+
+  const send = useCallback(async (text) => {
+    const q = text || input;
+    if (!q.trim()) return;
+    setMsgs(p => [...p, { id: Date.now(), sender: 'user', text: q }]);
+    setInput('');
+    setTyping(true);
+
+    const ctx = `You are an AI analyst embedded in the "${widget.title}" widget (${widget.category}) of the ABC Retail Insights+ dashboard. Data for this widget: ${JSON.stringify(widget.data)}. Full dataset context: ${JSON.stringify({ stores: D.stores, customers: D.customer_segments, inventory: D.inventory, monthly_revenue: D.monthly_revenue })}. Be concise, specific, and actionable. Use LKR currency. Answer only from the data provided.`;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: q, context: ctx })
+      });
+      const data = await res.json();
+      setTyping(false);
+      setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: data.reply || 'No response.' }]);
+    } catch (err) {
+      setTyping(false);
+      setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: 'Connection error. Please try again.' }]);
+    }
+  }, [input, widget]);
+
+  return (
+    <div className={`wchat-overlay open`} onClick={onClose}>
+      <div className="wchat-sheet" onClick={e => e.stopPropagation()}>
+        <div className="wchat-head">
+          <div>
+            <div className="wchat-head-label">{widget.category}</div>
+            <div className="wchat-head-title">{widget.title}</div>
+          </div>
+          <button className="wchat-close" onClick={onClose}><Icon name="close" /></button>
+        </div>
+
+        <div className="wchat-messages">
+          {msgs.length === 0 && (
+            <div className="wchat-empty">
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>◈</div>
+              <div className="wchat-empty-title">Ask about {widget.title}</div>
+              <div className="wchat-empty-sub">I have full context of this widget's data</div>
+              <div className="suggestions">
+                {(widget.suggestions || []).map((s, i) => (
+                  <button key={i} className="suggestion-chip" onClick={() => send(s)}>{s}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {msgs.map(m => (
+            <div key={m.id} className={`msg ${m.sender}`}>
+              <div className="msg-avatar">{m.sender === 'ai' ? '◈' : '●'}</div>
+              <div className="msg-bubble" dangerouslySetInnerHTML={{ __html: renderMd(m.text) }} />
+            </div>
+          ))}
+
+          {typing && (
+            <div className="msg ai">
+              <div className="msg-avatar">◈</div>
+              <div className="msg-bubble" style={{ padding: '0.65rem 0.9rem' }}>
+                <div className="typing-dots">
+                  <div className="dot" /><div className="dot" /><div className="dot" />
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={endRef} />
+        </div>
+
+        <div className="wchat-input-row">
+          <input
+            className="wchat-field"
+            placeholder={`Ask about ${widget.title}…`}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && send()}
+            autoFocus
+          />
+          <button className="wchat-send" onClick={() => send()} disabled={!input.trim() || typing}>
+            <Icon name="send" size={13} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════
+// CHART FACTORY
+// ══════════════════════════════════
+const Chart = ({ type, data, cfg = {} }) => {
+  const tt = { contentStyle: { background: '#1c2130', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, fontSize: 12, color: '#fff' }, cursor: { fill: 'rgba(255,255,255,0.04)' } };
+
+  if (!data?.length) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-3)', fontSize: '0.8rem' }}>No data</div>;
+
+  switch (type) {
+    case 'bar':
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+            <XAxis dataKey={cfg.x || 'name'} tick={{ fill: '#5c6480', fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#5c6480', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => fmt(v)} />
+            <Tooltip {...tt} />
+            <Bar dataKey={cfg.y || 'value'} fill={PALETTE[0]} radius={[4, 4, 0, 0]}>
+              {data.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      );
+
+    case 'hbar':
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} layout="vertical" margin={{ top: 4, right: 8, bottom: 0, left: 8 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+            <XAxis type="number" tick={{ fill: '#5c6480', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => fmt(v)} />
+            <YAxis type="category" dataKey={cfg.y || 'name'} tick={{ fill: '#8892aa', fontSize: 10 }} axisLine={false} tickLine={false} width={80} />
+            <Tooltip {...tt} />
+            <Bar dataKey={cfg.x || 'value'} fill={PALETTE[0]} radius={[0, 4, 4, 0]}>
+              {data.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      );
+
+    case 'line':
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+            <XAxis dataKey={cfg.x || 'name'} tick={{ fill: '#5c6480', fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#5c6480', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => fmt(v)} />
+            <Tooltip {...tt} />
+            {(cfg.lines || [cfg.y || 'value']).map((k, i) => (
+              <Line key={k} type="monotone" dataKey={k} stroke={PALETTE[i]} strokeWidth={2} dot={{ fill: PALETTE[i], r: 3 }} activeDot={{ r: 5 }} />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      );
+
+    case 'donut':
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie data={data} cx="50%" cy="50%" innerRadius="45%" outerRadius="70%" paddingAngle={3} dataKey={cfg.value || 'value'} nameKey={cfg.name || 'name'}>
+              {data.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
+            </Pie>
+            <Tooltip {...tt} />
+            <Legend iconSize={8} formatter={v => <span style={{ color: '#8892aa', fontSize: 11 }}>{v}</span>} />
+          </PieChart>
+        </ResponsiveContainer>
+      );
+
+    default:
+      return null;
+  }
+};
+
+// ══════════════════════════════════
+// WIDGET
+// ══════════════════════════════════
+const Widget = ({ config, wide }) => {
+  const [chatOpen, setChatOpen] = useState(false);
+
+  return (
+    <>
+      <div className={`widget${wide ? ' widget-wide' : ''}`}>
+        <div className="widget-head">
+          <div>
+            <div className="widget-category">{config.category}</div>
+            <div className="widget-title">{config.title}</div>
+            {config.kpi && <div className="widget-kpi">{config.kpi}</div>}
+            {config.kpiSub && <div className="widget-kpi-sub">{config.kpiSub}</div>}
+            {config.trend && (
+              <span className={`trend ${config.trend > 0 ? 'up' : 'down'}`}>
+                <Icon name={config.trend > 0 ? 'up' : 'down'} size={9} /> {Math.abs(config.trend)}%
+              </span>
+            )}
+          </div>
+          <button className="widget-chat-btn" onClick={() => setChatOpen(true)} title="Ask AI">◈</button>
+        </div>
+        <div className="widget-chart">
+          <Chart type={config.chartType} data={config.data} cfg={config.chartCfg} />
+        </div>
+      </div>
+
+      {chatOpen && <WidgetChat widget={config} onClose={() => setChatOpen(false)} />}
+    </>
+  );
+};
+
+// ══════════════════════════════════
+// GLOBAL CHAT DRAWER
+// ══════════════════════════════════
+const ChatDrawer = ({ open, onClose }) => {
+  const [msgs, setMsgs] = useState([]);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+  const endRef = useRef(null);
+
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, typing]);
+
+  const send = useCallback(async (text) => {
+    const q = text || input;
+    if (!q.trim()) return;
+    setMsgs(p => [...p, { id: Date.now(), sender: 'user', text: q }]);
+    setInput('');
+    setTyping(true);
+
+    const ctx = `You are an AI retail analyst for ${D.meta.company}, a ${D.meta.industry} retailer. You have access to the full dataset: ${JSON.stringify(D)}. Answer questions concisely and specifically using this data. Be actionable. Use LKR currency. Do not fabricate data not in the context. Format key numbers in bold.`;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: q, context: ctx })
+      });
+      const data = await res.json();
+      setTyping(false);
+      setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: data.reply || 'No response.' }]);
+    } catch (err) {
+      setTyping(false);
+      setMsgs(p => [...p, { id: Date.now(), sender: 'ai', text: 'Connection error. Please try again.' }]);
+    }
+  }, [input]);
+
+  const starters = [
+    "Which store is performing best?",
+    "Where are we overstocked?",
+    "How are VIP customers trending?",
+    "What drove June revenue growth?"
+  ];
+
+  return (
+    <>
+      <div className={`chat-drawer-overlay ${open ? 'open' : ''}`} onClick={onClose} />
+      <div className={`chat-drawer ${open ? 'open' : ''}`}>
+        <div className="drawer-handle" />
+        <div className="drawer-head">
+          <div className="drawer-head-info">
+            <div className="drawer-head-label">AI Analyst</div>
+            <div className="drawer-head-title">Chat with your data</div>
+          </div>
+          <button className="drawer-close" onClick={onClose}><Icon name="close" /></button>
+        </div>
+
+        <div className="drawer-messages">
+          {msgs.length === 0 && (
+            <div style={{ padding: '0.5rem 0' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-2)', marginBottom: '1rem' }}>
+                Ask anything across all {D.tables.length} datasets. Try:
+              </p>
+              <div className="suggestions" style={{ justifyContent: 'flex-start' }}>
+                {starters.map((s, i) => (
+                  <button key={i} className="suggestion-chip" onClick={() => send(s)}>{s}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {msgs.map(m => (
+            <div key={m.id} className={`msg ${m.sender}`}>
+              <div className="msg-avatar">{m.sender === 'ai' ? '◈' : '●'}</div>
+              <div className="msg-bubble" dangerouslySetInnerHTML={{ __html: renderMd(m.text) }} />
+            </div>
+          ))}
+
+          {typing && (
+            <div className="msg ai">
+              <div className="msg-avatar">◈</div>
+              <div className="msg-bubble">
+                <div className="typing-dots">
+                  <div className="dot" /><div className="dot" /><div className="dot" />
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={endRef} />
+        </div>
+
+        <div className="drawer-input">
+          <div className="drawer-input-wrap">
+            <input
+              className="drawer-input-field"
+              placeholder="Ask about your data…"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && send()}
+              autoFocus={open}
+            />
+          </div>
+          <button className="drawer-send" onClick={() => send()} disabled={!input.trim() || typing}>
+            <Icon name="send" size={13} />
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+// ══════════════════════════════════
+// CANVAS ENGINE
+// Reads D and auto-configures widgets
+// ══════════════════════════════════
+const buildWidgets = () => {
+  const totalRevenue = D.monthly_revenue.reduce((s, m) => s + m.revenue, 0);
+  const lastMonth = D.monthly_revenue[D.monthly_revenue.length - 1];
+  const prevMonth = D.monthly_revenue[D.monthly_revenue.length - 2];
+  const revGrowth = Math.round(((lastMonth.revenue - prevMonth.revenue) / prevMonth.revenue) * 100);
+
+  return [
+    {
+      id: 'revenue-trend',
+      category: 'Revenue',
+      title: 'Monthly Revenue Trend',
+      kpi: fmt(totalRevenue, 'LKR '),
+      kpiSub: 'Jan – Jun 2024',
+      trend: revGrowth,
+      chartType: 'line',
+      data: D.monthly_revenue,
+      chartCfg: { x: 'month', lines: ['revenue', 'returns'] },
+      wide: true,
+      suggestions: [
+        "Which month had highest revenue?",
+        "What's the trend in returns?",
+        "How does April compare to March?"
+      ]
+    },
+    {
+      id: 'store-revenue',
+      category: 'Store Performance',
+      title: 'Revenue by Store',
+      kpi: D.store_performance[0].store,
+      kpiSub: `Top performer · ${fmt(D.store_performance[0].revenue, 'LKR ')}`,
+      trend: D.store_performance[0].variance_vs_avg,
+      chartType: 'hbar',
+      data: D.store_performance,
+      chartCfg: { y: 'store', x: 'revenue' },
+      suggestions: [
+        "Which store is underperforming?",
+        "What is the revenue gap between top and bottom?",
+        "How does footfall correlate with revenue?"
+      ]
+    },
+    {
+      id: 'customer-segments',
+      category: 'Customer Analytics',
+      title: 'Customer Segments',
+      kpi: `${D.customer_segments[0].pct}% VIP`,
+      kpiSub: `${D.customer_segments[0].count.toLocaleString()} platinum customers`,
+      chartType: 'donut',
+      data: D.customer_segments.map(s => ({ name: s.segment, value: s.count })),
+      chartCfg: { value: 'value', name: 'name' },
+      suggestions: [
+        "What is the avg basket value of VIP customers?",
+        "How many customers are at risk?",
+        "What's the LTV difference between VIP and Regular?"
+      ]
+    },
+    {
+      id: 'category-revenue',
+      category: 'Product Mix',
+      title: 'Revenue by Category',
+      kpi: D.category_revenue[0].category,
+      kpiSub: `Highest revenue · ${fmt(D.category_revenue[0].revenue, 'LKR ')}`,
+      trend: D.category_revenue[0].growth_pct,
+      chartType: 'bar',
+      data: D.category_revenue,
+      chartCfg: { x: 'category', y: 'revenue' },
+      suggestions: [
+        "Which category has highest margin?",
+        "What category is growing fastest?",
+        "Is outerwear in decline?"
+      ]
+    },
+    {
+      id: 'inventory',
+      category: 'Inventory',
+      title: 'Stock vs Optimal Level',
+      kpi: 'Tops +920 units',
+      kpiSub: 'Highest overstock risk',
+      chartType: 'bar',
+      data: D.inventory,
+      chartCfg: { x: 'category', y: 'overstock_units' },
+      suggestions: [
+        "Which categories are understocked?",
+        "What is the overstock risk for Tops?",
+        "Which categories need immediate reorder?"
+      ]
+    },
+    {
+      id: 'peak-hours',
+      category: 'Operations',
+      title: 'Peak Transaction Hours',
+      kpi: '6PM',
+      kpiSub: 'Busiest hour · 521 transactions',
+      chartType: 'bar',
+      data: D.peak_hours,
+      chartCfg: { x: 'hour', y: 'transactions' },
+      suggestions: [
+        "When should I schedule most staff?",
+        "What's the slowest period of day?",
+        "How does morning compare to evening?"
+      ]
+    }
+  ];
+};
+
+// ══════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════
+const Dashboard = () => {
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const widgets = buildWidgets();
+
+  const handleBarSend = () => {
+    if (!chatInput.trim()) return;
+    setChatOpen(true);
+  };
+
+  return (
+    <div className="dashboard">
+      <nav className="nav">
+        <div className="nav-logo">I+</div>
+        <div style={{ flex: 1 }}>
+          <div className="nav-title">Insights+</div>
+        </div>
+        <span className="nav-sub" style={{ color: 'var(--text-2)', fontSize: '0.78rem' }}>{D.meta.company}</span>
+        <div className="nav-pill">◈ AI ready</div>
+      </nav>
+
+      <div className="canvas">
+        <div className="canvas-grid">
+          {widgets.map((w, i) => (
+            <Widget key={w.id} config={w} wide={w.wide} />
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom chat bar */}
+      <div className="chat-bar">
+        <div className="chat-input-wrap" onClick={() => setChatOpen(true)}>
+          <span style={{ fontSize: '1rem', opacity: 0.5 }}>◈</span>
+          <input
+            className="chat-input"
+            placeholder="Ask anything about your data…"
+            value={chatInput}
+            onChange={e => setChatInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { setChatOpen(true); } }}
+          />
+        </div>
+        <button className="chat-send" onClick={() => setChatOpen(true)}>
+          <Icon name="send" size={13} />
+        </button>
+      </div>
+
+      <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} />
+    </div>
+  );
+};
+
+// ══════════════════════════════════
+// APP ROOT
+// ══════════════════════════════════
+const App = () => {
+  const [screen, setScreen] = useState('intro');
+
+  if (screen === 'intro') return <IntroScreen onContinue={() => setScreen('login')} />;
+  if (screen === 'login') return <LoginScreen onLogin={() => setScreen('discovery')} />;
+  if (screen === 'discovery') return <DiscoveryScreen onBuild={() => setScreen('dashboard')} />;
+  return <Dashboard />;
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
