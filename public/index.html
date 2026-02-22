@@ -14,47 +14,50 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink: #0d0f14;
-      --ink-2: #1c2130;
-      --ink-3: #2d3448;
-      --muted: #5c6480;
-      --muted-2: #8892aa;
-      --border: rgba(255,255,255,0.08);
+      --ink: #111318;
+      --ink-2: #1a1e27;
+      --ink-3: #252a36;
+      --muted: #4a5168;
+      --muted-2: #6b7490;
+      --border: rgba(255,255,255,0.09);
       --border-light: rgba(255,255,255,0.05);
       --surface: rgba(255,255,255,0.04);
       --surface-2: rgba(255,255,255,0.07);
-      --accent: #4f8ef7;
-      --accent-glow: rgba(79,142,247,0.25);
-      --accent-2: #34d399;
-      --accent-3: #fb923c;
-      --danger: #f87171;
-      --white: #ffffff;
-      --text: rgba(255,255,255,0.92);
-      --text-2: rgba(255,255,255,0.60);
-      --text-3: rgba(255,255,255,0.35);
-      --radius: 16px;
-      --radius-sm: 10px;
-      --radius-lg: 24px;
-      --font-display: 'Syne', sans-serif;
-      --font-body: 'DM Sans', sans-serif;
-      --nav-h: 60px;
-      --chat-h: 72px;
+      --accent: #3b72c4;
+      --accent-glow: rgba(59,114,196,0.22);
+      --accent-2: #2da870;
+      --accent-3: #d97706;
+      --danger: #dc6060;
+      --white: #f0f2f6;
+      --text: rgba(240,242,246,0.93);
+      --text-2: rgba(240,242,246,0.55);
+      --text-3: rgba(240,242,246,0.30);
+      --radius: 10px;
+      --radius-sm: 7px;
+      --radius-lg: 14px;
+      --font-display: 'IBM Plex Sans Condensed', sans-serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --nav-h: 52px;
+      --chat-h: 64px;
       --keyboard-h: 0px;
+      --vh: 1vh;
     }
 
-    html, body { height: 100%; overflow: hidden; }
+    html { height: 100%; }
 
     body {
       font-family: var(--font-body);
       background: var(--ink);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
+      height: calc(var(--vh, 1vh) * 100);
+      overflow: hidden;
       overscroll-behavior: none;
     }
 
@@ -76,14 +79,14 @@
     /* ── INTRO ── */
     .intro {
       position: relative; z-index: 10;
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      padding: 2rem;
+      min-height: calc(var(--vh, 1vh) * 100); display: flex; align-items: center; justify-content: center;
+      padding: 2rem; overflow-y: auto;
       background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,142,247,0.15) 0%, transparent 70%),
                   radial-gradient(ellipse 60% 40% at 80% 100%, rgba(52,211,153,0.08) 0%, transparent 60%),
                   var(--ink);
     }
 
-    .intro-inner { max-width: 680px; width: 100%; text-align: center; }
+    .intro-inner { max-width: 680px; width: 100%; text-align: center; overflow: hidden; }
 
     .intro-badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -144,8 +147,8 @@
     /* ── LOGIN ── */
     .login {
       position: relative; z-index: 10;
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      padding: 2rem;
+      min-height: calc(var(--vh, 1vh) * 100); display: flex; align-items: center; justify-content: center;
+      padding: 2rem; overflow-y: auto;
       background: radial-gradient(ellipse 60% 50% at 30% 50%, rgba(79,142,247,0.1) 0%, transparent 60%), var(--ink);
     }
 
@@ -191,7 +194,7 @@
     /* ── DATA DISCOVERY ── */
     .discovery {
       position: relative; z-index: 10;
-      height: 100vh; display: flex; flex-direction: column;
+      height: calc(var(--vh, 1vh) * 100); display: flex; flex-direction: column;
       background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(52,211,153,0.08) 0%, transparent 60%), var(--ink);
     }
 
@@ -338,7 +341,7 @@
     /* ── CANVAS MODE SCREEN ── */
     .cmode-screen {
       position: relative; z-index: 10;
-      height: 100vh; display: flex; flex-direction: column;
+      height: calc(var(--vh, 1vh) * 100); display: flex; flex-direction: column;
       background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(79,142,247,0.1) 0%, transparent 60%), var(--ink);
     }
 
@@ -417,7 +420,7 @@
     /* ── CANVAS BUILDER ── */
     .canvas-builder {
       position: relative; z-index: 10;
-      height: 100vh; display: flex; flex-direction: column;
+      height: calc(var(--vh, 1vh) * 100); display: flex; flex-direction: column;
       background: var(--ink);
     }
 
@@ -617,7 +620,7 @@
     /* ── DASHBOARD LAYOUT ── */
     .dashboard {
       display: flex; flex-direction: column;
-      height: 100vh; position: relative; z-index: 10;
+      height: calc(var(--vh, 1vh) * 100); position: relative; z-index: 10;
       overflow: hidden;
     }
 
@@ -761,14 +764,13 @@
 
     .chat-drawer {
       position: fixed; left: 0; right: 0; z-index: 201;
-      bottom: var(--keyboard-h, 0px);
-      max-height: calc(100vh - var(--keyboard-h, 0px) - 44px);
-      height: min(75vh, 600px);
+      bottom: var(--keyboard-offset, 0px);
+      height: min(72vh, 580px);
       background: var(--ink-2); border-top: 1px solid var(--border);
-      border-radius: 24px 24px 0 0;
+      border-radius: 12px 12px 0 0;
       display: flex; flex-direction: column;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     .chat-drawer.open { transform: translateY(0); }
@@ -791,14 +793,14 @@
     .drawer-head-title { font-weight: 700; font-size: 1rem; }
 
     .drawer-close {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--surface); border: 1px solid var(--border);
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: transparent; border: none;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; color: var(--text-2); font-size: 1rem;
-      transition: all 0.2s;
+      margin: -6px -8px -6px 0;
     }
 
-    .drawer-close:hover { background: var(--surface-2); color: var(--text); }
+    .drawer-close:active { color: var(--text); }
 
     .drawer-messages {
       flex: 1; overflow-y: auto;
@@ -879,19 +881,19 @@
     .wchat-sheet {
       width: 100%; max-width: 540px;
       background: var(--ink-2); border: 1px solid var(--border);
-      border-radius: 24px 24px 0 0;
+      border-radius: 12px 12px 0 0;
       display: flex; flex-direction: column;
-      bottom: var(--keyboard-h, 0px);
-      max-height: calc(100vh - var(--keyboard-h, 0px) - 44px);
-      height: min(70vh, 520px);
-      transform: translateY(20px); transition: transform 0.25s;
+      bottom: var(--keyboard-offset, 0px);
+      position: relative;
+      height: min(68vh, 500px);
+      transform: translateY(16px); transition: transform 0.22s ease;
     }
 
     .wchat-overlay.open .wchat-sheet { transform: translateY(0); }
 
     @media (min-width: 540px) {
       .wchat-overlay { align-items: center; }
-      .wchat-sheet { border-radius: 24px; height: min(70vh, 520px); }
+      .wchat-sheet { border-radius: 12px; }
     }
 
     .wchat-head {
@@ -903,13 +905,14 @@
     .wchat-head-title { font-weight: 700; font-size: 0.95rem; }
 
     .wchat-close {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--surface); border: 1px solid var(--border);
+      width: 44px; height: 44px; border-radius: var(--radius-sm);
+      background: transparent; border: none;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; color: var(--text-2); font-size: 1rem; transition: all 0.2s;
+      cursor: pointer; color: var(--text-2); font-size: 1rem;
+      margin: -6px -6px -6px 0;
     }
 
-    .wchat-close:hover { background: var(--danger); border-color: var(--danger); color: white; }
+    .wchat-close:active { color: var(--text); }
 
     .wchat-messages {
       flex: 1; overflow-y: auto; padding: 1rem 1.25rem;
@@ -979,6 +982,21 @@
     }
   </style>
 </head>
+<script>
+// Fix --vh for mobile browser chrome (address bar height)
+function setVh() {
+  document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+}
+setVh();
+window.addEventListener('resize', setVh);
+// Keyboard-aware: lift drawers above iOS/Android soft keyboard
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', function() {
+    var offset = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
+    document.documentElement.style.setProperty('--keyboard-offset', Math.max(0, offset) + 'px');
+  });
+}
+</script>
 <body>
 <div id="root"></div>
 
@@ -1692,20 +1710,6 @@ const WidgetChat = ({ widget, onClose }) => {
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, typing]);
 
-  // Keyboard-aware: track visualViewport height
-  useEffect(() => {
-    if (!window.visualViewport) return;
-    const onResize = () => {
-      const keyboardH = window.innerHeight - window.visualViewport.height;
-      document.documentElement.style.setProperty('--keyboard-h', `${keyboardH}px`);
-    };
-    window.visualViewport.addEventListener('resize', onResize);
-    return () => {
-      window.visualViewport.removeEventListener('resize', onResize);
-      document.documentElement.style.setProperty('--keyboard-h', '0px');
-    };
-  }, []);
-
   // Swipe-to-dismiss
   const onTouchStart = (e) => {
     dragStart.current = e.touches[0].clientY;
@@ -1945,22 +1949,6 @@ const ChatDrawer = ({ open, onClose }) => {
   const drawerRef = useRef(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs, typing]);
-
-  // Keyboard-aware: visualViewport
-  useEffect(() => {
-    if (!window.visualViewport) return;
-    const onResize = () => {
-      const keyboardH = window.innerHeight - window.visualViewport.height;
-      document.documentElement.style.setProperty('--keyboard-h', `${keyboardH}px`);
-    };
-    if (open) {
-      window.visualViewport.addEventListener('resize', onResize);
-    }
-    return () => {
-      window.visualViewport.removeEventListener('resize', onResize);
-      if (!open) document.documentElement.style.setProperty('--keyboard-h', '0px');
-    };
-  }, [open]);
 
   // Swipe-to-dismiss
   const onTouchStart = (e) => {
